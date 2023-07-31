@@ -20,7 +20,7 @@ jobs:
       - env:
           EXTRAS: ${{ toJson(inputs.extras) }}
           DEFAULT_METADATA: ${{ toJson(github) }}
-          CUSTOM_METADATA: ${{ toJson(inputs.custom-metadata) }}
+          CUSTOM_METADATA: ${{ inputs.custom-metadata }}
         run: |
           METADATA="${CUSTOM_METADATA}"
           
