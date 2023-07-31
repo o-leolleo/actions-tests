@@ -44,6 +44,7 @@ jobs:
     env:
       base: ${{ needs.run-metadata.outputs.base }}
       ref: ${{ needs.run-metadata.outputs.ref }}
+      extras: ${{ fromJson(needs.run-metadata.outputs.run-metadata).extras.foo }}
     steps:
       - run: |
           echo ${base}

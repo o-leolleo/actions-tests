@@ -30,7 +30,7 @@ jobs:
           fi
           
           echo "${METADATA}" | jq -r -c '.|del(.token)|{metadata: .}' > github-run-metadata.json
-          echo "${EXTRAS}" | jq -r -c > extras.json
+          echo "${EXTRAS}" | jq -r -c '.|{extras: .}' > extras.json
           
           jq -s -r -c '.[0] * .[1]' extras.json github-run-metadata.json > run-metadata.json
 
