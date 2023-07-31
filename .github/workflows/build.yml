@@ -12,6 +12,8 @@ permissions:
 jobs:
   run-metadata:
     uses: ./.github/workflows/run-metadata-download.yml
+    with:
+      from-workflow: test.yml
       
   changed-files:
     name: Changed files
