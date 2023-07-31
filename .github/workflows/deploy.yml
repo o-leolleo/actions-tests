@@ -1,8 +1,8 @@
-name: Build
-run-name: Build actions
+name: Deploy
+run-name: Deploy actions
 on:
   workflow_run: 
-    workflows: [Tests]
+    workflows: [Build]
     types: [completed]
 permissions:
   id-token: write
@@ -12,7 +12,7 @@ permissions:
 jobs:
   run-metadata:
     uses: ./.github/workflows/run-metadata-download.yml
-      
+
   changed-files:
     name: Changed files
     needs: run-metadata
@@ -34,24 +34,17 @@ jobs:
           filters: |
             app:
               - 'README.md'
-  build:
+
+  deploy:
     runs-on: ubuntu-latest
     needs: [changed-files, run-metadata]
-    if: needs.changed-files.outputs.app == 'true'
     env:
       base: ${{ needs.run-metadata.outputs.base }}
       ref: ${{ needs.run-metadata.outputs.ref }}
+      extra: ${{ fromJson(needs.run-metadata.outputs.run-metadata).next }}
     steps:
       - run: |
-          echo ${base}
-          echo ${ref}
-
-  run-metadata-upload:
-    needs: run-metadata
-    uses: ./.github/workflows/run-metadata-upload.yml
-    with:
-      custom-metadata: ${{ toJson(needs.run-metadata.outputs.run-metadata) }}
-      extras: |
-        {
-          "next": "foo-next"
-        }
+          echo 'Deploying'
+          echo "${base}"
+          echo "${ref}"
+          echo "${extra}"
