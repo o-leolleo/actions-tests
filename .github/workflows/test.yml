@@ -8,8 +8,10 @@ jobs:
   run-metadata:
     runs-on: ubuntu-latest
     steps:
-      - run: |
-          echo ${{ toJSON(github) }} > github.json
+      - env:
+          GITHUB: ${{ toJSON(github) }}
+        run: |
+          echo "${GITHUB}" > github.json
           cat github.json
   changed-files:
     name: Changed files
