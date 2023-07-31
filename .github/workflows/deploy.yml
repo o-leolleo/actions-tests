@@ -40,6 +40,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
+    if: needs.changed-files.outputs.app == 'true'
     needs: [changed-files, run-metadata]
     env:
       base: ${{ needs.run-metadata.outputs.base }}
