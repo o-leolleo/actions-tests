@@ -32,7 +32,6 @@ jobs:
           echo running tests
   run-metadata:
     runs-on: ubuntu-latest
-    needs: test
     steps:
       - env:
           GITHUB: ${{ toJSON(github) }}
