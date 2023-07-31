@@ -53,7 +53,7 @@ jobs:
     needs: run-metadata
     uses: ./.github/workflows/run-metadata-upload.yml
     with:
-      custom-metadata: ${{ toJson(needs.run-metadata.outputs.run-metadata) }}
+      custom-metadata: ${{ needs.run-metadata.outputs.run-metadata }}
       extras: |
         {
           "next": "foo-next"
