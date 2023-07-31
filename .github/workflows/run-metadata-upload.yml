@@ -5,7 +5,7 @@ on:
     inputs:
       custom-metadata:
         description: Forces custom metadata.
-        default: ''
+        default: null
         required: false
         type: string
       extras:
