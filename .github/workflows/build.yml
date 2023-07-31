@@ -49,8 +49,12 @@ jobs:
               - 'README.md'
   build:
     runs-on: ubuntu-latest
-    needs: changed-files
+    needs: [changed-files, gh-root-meta]
     if: needs.changed-files.outputs.app == 'true'
+    env:
+      BASE: ${{ fromJSON(needs.gh-root-meta.outputs.root_meta).event.before }}
+      REF: ${{ fromJSON(needs.gh-root-meta.outputs.root_meta).ref }}
     steps:
       - run: |
-          echo running build
+          echo ${BASE}
+          echo ${REFg}
