@@ -18,8 +18,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - env:
-          EXTRAS: ${{ toJson(inputs.extras) }}
           DEFAULT_METADATA: ${{ toJson(github) }}
+          EXTRAS: ${{ inputs.extras }}
           CUSTOM_METADATA: ${{ inputs.custom-metadata }}
         run: |
           METADATA="${CUSTOM_METADATA}"
