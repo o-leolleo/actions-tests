@@ -25,6 +25,7 @@ jobs:
           METADATA="${CUSTOM_METADATA}"
           
           if [ -z "${CUSTOM_METADATA}" ]; then
+            echo "Setting metadata as default github metadata..."
             METADATA="${DEFAULT_METADATA}"
           fi
           
