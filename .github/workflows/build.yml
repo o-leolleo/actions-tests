@@ -25,6 +25,7 @@ jobs:
       - name: set output
         id: root_meta
         run: |
+          echo "root_meta=\"$(cat github-workflow-root.json | jq -c)\""
           echo "root_meta=\"$(cat github-workflow-root.json | jq -c)\"" >> "${GITHUB_OUTPUT}"
   changed-files:
     name: Changed files
