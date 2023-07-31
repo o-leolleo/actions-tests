@@ -29,8 +29,6 @@ jobs:
             METADATA="${DEFAULT_METADATA}"
           fi
           
-          echo "${METADATA}"
-          echo "${EXTRAS}"
           echo "${METADATA}" | jq -r -c '.|del(.token)|{metadata: .}' > github-run-metadata.json
           echo "${EXTRAS}" | jq -r -c > extras.json
           
