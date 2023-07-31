@@ -14,7 +14,7 @@ jobs:
     if: github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     outputs:
-      ROOT_META: ${{ steps.root_meta.outputs.root_meta }}
+      root_meta: ${{ steps.root_meta.outputs.root_meta }}
     steps:
       - name: Download a single artifact
         uses: dawidd6/action-download-artifact@v2
