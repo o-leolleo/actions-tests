@@ -11,6 +11,12 @@ on:
       run-metadata: 
         description: Workflow run metadata
         value: ${{ jobs.run-metadata-download.outputs.run-metadata }}
+      base:
+        description: Used as param to path-filter.
+        value: ${{ jobs.run-metadata-download.outputs.base }}
+      ref:
+        description: Used as param to path-filter.
+        value: ${{ jobs.run-metadata-download.outputs.ref }}
 jobs:
   run-metadata-download:
     runs-on: ubuntu-latest
