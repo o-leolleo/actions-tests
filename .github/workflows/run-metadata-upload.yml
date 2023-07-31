@@ -16,7 +16,7 @@ jobs:
           GITHUB: ${{ toJSON(github) }}
           EXTRAS: ${{ toJSON(inputs.extras) }}
         run: |
-          echo "${EXTRAS}" | 'jq -r -c' > extras.json
+          echo "${EXTRAS}" | jq -r -c > extras.json
           echo "${GITHUB}" | jq -r -c 'del(.token)|{metadata: .}' > github-run-metadata.json
           run_metadata="$(jq -s -r -c '.[0] * .[1]' extras.json github-run-metadtata.json)"
 
