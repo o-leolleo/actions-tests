@@ -44,7 +44,7 @@ jobs:
     env:
       base: ${{ needs.run-metadata.outputs.base }}
       ref: ${{ needs.run-metadata.outputs.ref }}
-      extras: ${{ fromJson(needs.run-metadata.outputs.run-metadata.extras).foo }}
+      extras: ${{ fromJson(needs.run-metadata.outputs.extras).foo }}
     steps:
       - run: |
           echo ${base}
@@ -54,7 +54,7 @@ jobs:
     needs: run-metadata
     uses: ./.github/workflows/run-metadata-upload.yml
     with:
-      custom-metadata: ${{ needs.run-metadata.outputs.run-metadata.metadata }}
+      custom-metadata: ${{ needs.run-metadata.outputs.metadata }}
       extras: |
         {
           "next": "foo-next"
