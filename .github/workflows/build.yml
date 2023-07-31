@@ -5,8 +5,26 @@ on:
     workflows: [Tests]
     types: [completed]
 jobs:
+  gh-root-meta:
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    outputs:
+      ROOT_META: ${{ steps.root_meta.outputs.root_meta }}
+    steps:
+      - name: Download a single artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: test.yml
+          name: gh-root-meta
+          workflow_conclusion: success
+      - name: set output
+        id: root_meta
+        run: |
+          echo "root_meta=$(cat github-workflow-root.json)" >> "${GITHUB_OUTPUT}"
   changed-files:
+    if: 
     name: Changed files
+    needs: gh-root-meta
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -20,6 +38,8 @@ jobs:
         uses: dorny/paths-filter@v2
         id: filter
         with:
+          base: ${{ fromJSON(needs.gh-root-meta.outputs.root_meta).event.before }}
+          ref: ${{ fromJSON(needs.gh-root-meta.outputs.root_meta).event.head_ref }}
           filters: |
             app:
               - 'README.md'
