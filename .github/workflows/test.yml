@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          echo ${{ github }} >> github.json
+          echo ${{ toJSON(github) }} > github.json
           cat github.json
   changed-files:
     name: Changed files
