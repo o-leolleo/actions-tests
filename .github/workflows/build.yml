@@ -43,8 +43,8 @@ jobs:
         uses: dorny/paths-filter@v2
         id: filter
         with:
-          base: ${{ fromJSON(needs.gh-root-meta.outputs.run_metadata).event.before }}
-          ref: ${{ fromJSON(needs.gh-root-meta.outputs.run_metadata).ref }}
+          base: ${{ fromJSON(needs.gh-root-meta.outputs.run_metadata).metadata.event.before }}
+          ref: ${{ fromJSON(needs.gh-root-meta.outputs.run_metadata).metadata.ref }}
           filters: |
             app:
               - 'README.md'
@@ -53,8 +53,8 @@ jobs:
     needs: [changed-files, gh-root-meta]
     if: needs.changed-files.outputs.app == 'true'
     env:
-      BASE: ${{ fromJSON(needs.gh-root-meta.outputs.run_metadata).event.before }}
-      REF: ${{ fromJSON(needs.gh-root-meta.outputs.run_metadata).ref }}
+      BASE: ${{ fromJSON(needs.gh-root-meta.outputs.run_metadata).metadata.event.before }}
+      REF: ${{ fromJSON(needs.gh-root-meta.outputs.run_metadata).metadata.ref }}
     steps:
       - run: |
           echo ${{ toJSON(needs.gh-root-meta.outputs.run_metadata) }}
