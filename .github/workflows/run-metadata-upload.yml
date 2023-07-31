@@ -3,6 +3,11 @@ run-name: Run metadata upload as artifact
 on:
   workflow_call:
     inputs:
+      custom-metadata:
+        description: Forces custom metadata.
+        default: ''
+        required: false
+        type: string
       extras:
         description: Extra json object to be merged on top of the default metadata.
         default: '{}'
@@ -13,11 +18,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - env:
-          GITHUB: ${{ toJSON(github) }}
           EXTRAS: ${{ toJSON(inputs.extras) }}
+          DEFAULT_METADATA: ${{ toJSON(github) }}
+          CUSTOM_METADATA: ${{ toJSON(inputs.custom-metadata)}}
         run: |
+          METADATA="${CUSTOM_METADATA}"
+          
+          if [ -z "${CUSTOM_METADATA}" ]; then
+            METADATA="${DEFAULT_METADATA}"
+          fi
+          
+          echo "${METADATA}" | jq -r -c 'del(.token)|{metadata: .}' > github-run-metadata.json
           echo "${EXTRAS}" | jq -r -c > extras.json
-          echo "${GITHUB}" | jq -r -c 'del(.token)|{metadata: .}' > github-run-metadata.json
+          
           jq -s -r -c '.[0] * .[1]' extras.json github-run-metadata.json > run-metadata.json
 
       - name: upload root info

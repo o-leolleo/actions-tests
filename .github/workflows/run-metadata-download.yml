@@ -1,0 +1,53 @@
+name: Run metadata download
+run-name: Run metadata download from artifacts
+on:
+  workflow_call:
+    inputs:
+      from-workflow:
+        description: Workflow to download artifacts from.
+        required: true
+        type: string
+    outputs:
+      run-metadata: 
+        description: Workflow run metadata
+        value: ${{ jobs.run-metadata-download.outputs.run-metadata }}
+jobs:
+  run-metadata-download:
+    runs-on: ubuntu-latest
+    outputs:
+      run-metadata: ${{ steps.run_metadata.outputs.run_metadata }}
+      base: ${{ steps.refs.outputs.base }}
+      ref: ${{ steps.refs.outputs.ref }}
+    steps:
+      - name: Download a single artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: ${{ inputs.from-workflow }}
+          name: run-metadata
+          workflow_conclusion: success
+
+      - name: Sets output
+        id: run_metadata
+        run: |
+          run_metadata="$(cat run-metadata.json | jq -r -c)"
+          echo "run_metadata=$run_metadata" >> "${GITHUB_OUTPUT}"
+
+      - name: Sets path filters helpers
+        id: refs
+        env:
+          METADATA_EVENT_NAME: ${{ fromJSON(steps.run_metadata.outputs.run_metadata).event_name }}
+          METADATA_REF: ${{ fromJSON(steps.run_metadata.outputs.run_metadata).ref }}
+          METADATA_BASE_REF: ${{ fromJSON(steps.run_metadata.outputs.run_metadata).base_ref }}
+          METADATA_HEAD_REF: ${{ fromJSON(steps.run_metadata.outputs.run_metadata).head_ref }}
+          BEFORE: ${{ fromJSON(steps.run_metadata.outputs.run_metadata).event.before }}
+        run: |
+          if [[ "${METADATA_EVENT_NAME}" == 'push' ]]; then
+            base="${BEFORE}"
+            ref="${METADATA_REF}"
+          elif [[ "${METADATA_EVENT_NAME}" == 'pull_request' ]]; then
+            base="${METADATA_BASE_REF}"
+            ref="${METADATA_HEAD_REF}"
+          fi
+
+          echo "ref=${ref}" >> "${GITHUB_OUTPUT}"
+          echo "base=${base}" >> "${GITHUB_OUTPUT}"

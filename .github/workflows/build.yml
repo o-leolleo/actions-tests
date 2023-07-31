@@ -10,26 +10,12 @@ permissions:
   pull-requests: write
   actions: read
 jobs:
-  gh-root-meta:
-    if: github.event.workflow_run.conclusion == 'success'
-    runs-on: ubuntu-latest
-    outputs:
-      run_metadata: ${{ steps.run_metadata.outputs.run_metadata }}
-    steps:
-      - name: Download a single artifact
-        uses: dawidd6/action-download-artifact@v2
-        with:
-          workflow: test.yml
-          name: run-metadata
-          workflow_conclusion: success
-      - name: set output
-        id: run_metadata
-        run: |
-          run_metadata="$(cat run-metadata.json | jq -r -c)"
-          echo "run_metadata=$run_metadata" >> "${GITHUB_OUTPUT}"
+  run-metadata:
+    uses: ./.github/workflows/run-metadata-download.yml
+      
   changed-files:
     name: Changed files
-    needs: gh-root-meta
+    needs: run-metadata
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -43,20 +29,19 @@ jobs:
         uses: dorny/paths-filter@v2
         id: filter
         with:
-          base: ${{ fromJSON(needs.gh-root-meta.outputs.run_metadata).metadata.event.before }}
-          ref: ${{ fromJSON(needs.gh-root-meta.outputs.run_metadata).metadata.ref }}
+          base: ${{ needs.run-metadata.outputs.base }}
+          ref: ${{ needs.run-metadata.outputs.ref }}
           filters: |
             app:
               - 'README.md'
   build:
     runs-on: ubuntu-latest
-    needs: [changed-files, gh-root-meta]
+    needs: [changed-files, run-metadata]
     if: needs.changed-files.outputs.app == 'true'
     env:
-      BASE: ${{ fromJSON(needs.gh-root-meta.outputs.run_metadata).metadata.event.before }}
-      REF: ${{ fromJSON(needs.gh-root-meta.outputs.run_metadata).metadata.ref }}
+      base: ${{ needs.run-metadata.outputs.base }}
+      ref: ${{ needs.run-metadata.outputs.ref }}
     steps:
       - run: |
-          echo ${{ toJSON(needs.gh-root-meta.outputs.run_metadata) }}
-          echo ${BASE}
-          echo ${REF}
+          echo ${base}
+          echo ${ref}
