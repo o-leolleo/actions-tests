@@ -8,9 +8,12 @@ on:
         required: true
         type: string
     outputs:
-      run-metadata: 
+      metadata: 
         description: Workflow run metadata
-        value: ${{ jobs.run-metadata-download.outputs.run-metadata }}
+        value: ${{ jobs.run-metadata-download.outputs.run-metadata.metadata }}
+      extras:
+        description: Workflow run extras
+        value: ${{ jobs.run-metadata-download.outputs.run-metadata.extras }}
       base:
         description: Used as param to path-filter.
         value: ${{ jobs.run-metadata-download.outputs.base }}
@@ -35,17 +38,19 @@ jobs:
       - name: Sets output
         id: run_metadata
         run: |
-          run_metadata="$(cat run-metadata.json | jq -r -c)"
-          echo "run_metadata=$run_metadata" >> "${GITHUB_OUTPUT}"
+          metadata="$(cat run-metadata.json | jq -r -c '.metadata')"
+          extras="$(cat run-metadata.json | jq -r -c '.extras')"
+          echo "metadata=$metadata" >> "${GITHUB_OUTPUT}"
+          echo "extras=$extras" >> "${GITHUB_OUTPUT}"
 
       - name: Sets path filters helpers
         id: refs
         env:
-          METADATA_EVENT_NAME: ${{ fromJson(steps.run_metadata.outputs.run_metadata).metadata.event_name }}
-          METADATA_REF: ${{ fromJson(steps.run_metadata.outputs.run_metadata).metadata.ref }}
-          METADATA_BASE_REF: ${{ fromJson(steps.run_metadata.outputs.run_metadata).metadata.base_ref }}
-          METADATA_HEAD_REF: ${{ fromJson(steps.run_metadata.outputs.run_metadata).metadata.head_ref }}
-          BEFORE: ${{ fromJson(steps.run_metadata.outputs.run_metadata).metadata.event.before }}
+          METADATA_EVENT_NAME: ${{ fromJson(steps.run_metadata.outputs.run_metadata.metadata).event_name }}
+          METADATA_REF: ${{ fromJson(steps.run_metadata.outputs.run_metadata.metadata).ref }}
+          METADATA_BASE_REF: ${{ fromJson(steps.run_metadata.outputs.run_metadata.metadata).base_ref }}
+          METADATA_HEAD_REF: ${{ fromJson(steps.run_metadata.outputs.run_metadata.metadata).head_ref }}
+          BEFORE: ${{ fromJson(steps.run_metadata.outputs.run_metadata.metadata).event.before }}
         run: |
           if [[ "${METADATA_EVENT_NAME}" == 'push' ]]; then
             base="${BEFORE}"
