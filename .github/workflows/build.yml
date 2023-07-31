@@ -14,7 +14,7 @@ jobs:
     if: github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     outputs:
-      root_meta: ${{ steps.root_meta.outputs.root_meta }}
+      run_metadata: ${{ steps.run_metadata.outputs.run_metadata }}
     steps:
       - name: Download a single artifact
         uses: dawidd6/action-download-artifact@v2
@@ -23,10 +23,10 @@ jobs:
           name: gh-root-meta
           workflow_conclusion: success
       - name: set output
-        id: root_meta
+        id: run_metadata
         run: |
-          echo "root_meta=\"$(cat github-workflow-root.json | jq -c)\""
-          echo "root_meta=\"$(cat github-workflow-root.json | jq -c)\"" >> "${GITHUB_OUTPUT}"
+          run_metadata="$(cat github-workflow-root.json | jq -r -c)"
+          echo "run_metadata=$run_metadata" >> "${GITHUB_OUTPUT}"
   changed-files:
     name: Changed files
     needs: gh-root-meta
@@ -43,8 +43,8 @@ jobs:
         uses: dorny/paths-filter@v2
         id: filter
         with:
-          base: ${{ fromJSON(needs.gh-root-meta.outputs.root_meta).event.before }}
-          ref: ${{ fromJSON(needs.gh-root-meta.outputs.root_meta).ref }}
+          base: ${{ fromJSON(needs.gh-root-meta.outputs.run_metadata).event.before }}
+          ref: ${{ fromJSON(needs.gh-root-meta.outputs.run_metadata).ref }}
           filters: |
             app:
               - 'README.md'
@@ -53,10 +53,10 @@ jobs:
     needs: [changed-files, gh-root-meta]
     if: needs.changed-files.outputs.app == 'true'
     env:
-      BASE: ${{ fromJSON(needs.gh-root-meta.outputs.root_meta).event.before }}
-      REF: ${{ fromJSON(needs.gh-root-meta.outputs.root_meta).ref }}
+      BASE: ${{ fromJSON(needs.gh-root-meta.outputs.run_metadata).event.before }}
+      REF: ${{ fromJSON(needs.gh-root-meta.outputs.run_metadata).ref }}
     steps:
       - run: |
-          echo ${{ toJSON(needs.gh-root-meta.outputs.root_meta) }}
+          echo ${{ toJSON(needs.gh-root-meta.outputs.run_metadata) }}
           echo ${BASE}
           echo ${REF}
