@@ -35,11 +35,11 @@ jobs:
       - name: Sets path filters helpers
         id: refs
         env:
-          METADATA_EVENT_NAME: ${{ fromJSON(steps.run_metadata.outputs.run_metadata).event_name }}
-          METADATA_REF: ${{ fromJSON(steps.run_metadata.outputs.run_metadata).ref }}
-          METADATA_BASE_REF: ${{ fromJSON(steps.run_metadata.outputs.run_metadata).base_ref }}
-          METADATA_HEAD_REF: ${{ fromJSON(steps.run_metadata.outputs.run_metadata).head_ref }}
-          BEFORE: ${{ fromJSON(steps.run_metadata.outputs.run_metadata).event.before }}
+          METADATA_EVENT_NAME: ${{ fromJson(steps.run_metadata.outputs.run_metadata).metadata.event_name }}
+          METADATA_REF: ${{ fromJson(steps.run_metadata.outputs.run_metadata).metadata.ref }}
+          METADATA_BASE_REF: ${{ fromJson(steps.run_metadata.outputs.run_metadata).metadata.base_ref }}
+          METADATA_HEAD_REF: ${{ fromJson(steps.run_metadata.outputs.run_metadata).metadata.head_ref }}
+          BEFORE: ${{ fromJson(steps.run_metadata.outputs.run_metadata).metadata.event.before }}
         run: |
           if [[ "${METADATA_EVENT_NAME}" == 'push' ]]; then
             base="${BEFORE}"
