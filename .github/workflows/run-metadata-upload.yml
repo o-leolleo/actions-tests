@@ -5,7 +5,7 @@ on:
     inputs:
       custom-metadata:
         description: Forces custom metadata.
-        default: ''
+        default: '{}'
         required: false
         type: string
       extras:
@@ -18,13 +18,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - env:
-          EXTRAS: ${{ toJSON(inputs.extras) }}
-          DEFAULT_METADATA: ${{ toJSON(github) }}
-          CUSTOM_METADATA: ${{ toJSON(inputs.custom-metadata)}}
+          EXTRAS: ${{ toJson(inputs.extras) }}
+          DEFAULT_METADATA: ${{ toJson(github) }}
+          CUSTOM_METADATA: ${{ toJson(inputs.custom-metadata)}}
         run: |
           METADATA="${CUSTOM_METADATA}"
           
-          if [ -z "${CUSTOM_METADATA}" ]; then
+          if [ "${CUSTOM_METADATA}" = '{}' ]; then
             echo "Setting metadata as default github metadata..."
             METADATA="${DEFAULT_METADATA}"
           fi
