@@ -4,6 +4,11 @@ on:
   workflow_run: 
     workflows: [Tests]
     types: [completed]
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+  actions: read
 jobs:
   gh-root-meta:
     if: github.event.workflow_run.conclusion == 'success'
