@@ -1,5 +1,5 @@
 name: Build
-run-name: Build actions ${{ github.workflow.run_id }}
+run-name: Build actions
 on:
   workflow_run: 
     workflows: [Tests]

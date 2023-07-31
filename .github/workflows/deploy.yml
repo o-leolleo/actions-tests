@@ -1,5 +1,5 @@
 name: Deploy
-run-name: Deploy actions ${{ github.workflow.run_id }}
+run-name: Deploy actions
 on:
   workflow_run: 
     workflows: [Build]
