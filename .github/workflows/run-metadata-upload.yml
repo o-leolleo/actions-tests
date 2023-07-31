@@ -5,7 +5,7 @@ on:
     inputs:
       custom-metadata:
         description: Forces custom metadata.
-        default: '{}'
+        default: ''
         required: false
         type: string
       extras:
@@ -24,11 +24,13 @@ jobs:
         run: |
           METADATA="${CUSTOM_METADATA}"
           
-          if [ "${CUSTOM_METADATA}" = '{}' ]; then
+          if [ -z "${CUSTOM_METADATA}" ]; then
             echo "Setting metadata as default github metadata..."
             METADATA="${DEFAULT_METADATA}"
           fi
           
+          echo "${METADATA}"
+          echo "${EXTRAS}"
           echo "${METADATA}" | jq -r -c '.|del(.token)|{metadata: .}' > github-run-metadata.json
           echo "${EXTRAS}" | jq -r -c > extras.json
           
