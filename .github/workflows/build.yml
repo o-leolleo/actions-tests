@@ -22,7 +22,6 @@ jobs:
         run: |
           echo "root_meta=$(cat github-workflow-root.json)" >> "${GITHUB_OUTPUT}"
   changed-files:
-    if: 
     name: Changed files
     needs: gh-root-meta
     runs-on: ubuntu-latest
