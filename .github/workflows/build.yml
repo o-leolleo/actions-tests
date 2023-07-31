@@ -56,5 +56,6 @@ jobs:
       REF: ${{ fromJSON(needs.gh-root-meta.outputs.root_meta).ref }}
     steps:
       - run: |
+          echo ${{ toJSON(needs.gh-root-meta.outputs.root_meta) }}
           echo ${BASE}
-          echo ${REFg}
+          echo ${REF}
