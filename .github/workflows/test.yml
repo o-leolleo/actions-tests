@@ -36,7 +36,7 @@ jobs:
       - env:
           GITHUB: ${{ toJSON(github) }}
         run: |
-          echo "${GITHUB}" | jq 'del(.token)|{root: .}' > github-workflow-root.json
+          echo "${GITHUB}" | jq 'del(.token)' > github-workflow-root.json
       - name: upload root info
         uses: actions/upload-artifact@v3
         with:

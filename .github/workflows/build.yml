@@ -25,7 +25,7 @@ jobs:
       - name: set output
         id: root_meta
         run: |
-          echo "root_meta=$(cat github-workflow-root.json)" >> "${GITHUB_OUTPUT}"
+          echo "root_meta=\"$(cat github-workflow-root.json)\"" >> "${GITHUB_OUTPUT}"
   changed-files:
     name: Changed files
     needs: gh-root-meta
