@@ -25,7 +25,7 @@ jobs:
       - name: set output
         id: run_metadata
         run: |
-          run_metadata="$(cat github-workflow-root.json | jq -r -c)"
+          run_metadata="$(cat run-metadata.json | jq -r -c)"
           echo "run_metadata=$run_metadata" >> "${GITHUB_OUTPUT}"
   changed-files:
     name: Changed files

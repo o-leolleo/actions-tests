@@ -1,0 +1,30 @@
+name: Run metadata upload
+run-name: Run metadata upload as artifact
+on:
+  workflow_call:
+    inputs:
+      extras:
+        description: Extra json object to be merged on top of the default metadata.
+        default: '{}'
+        required: false
+        type: string
+jobs:
+  run-metadata:
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          GITHUB: ${{ toJSON(github) }}
+          EXTRAS: ${{ toJSON(inputs.extras) }}
+        run: |
+          echo "${EXTRAS}" | 'jq -r -c' > extras.json
+          echo "${GITHUB}" | jq -r -c 'del(.token)|{metadata: .}' > github-run-metadata.json
+          run_metadata="$(jq -s -r -c '.[0] * .[1]' extras.json github-run-metadtata.json)"
+
+          echo "$run_metadata" >> "${GITHUB_OUTPUT}"
+
+      - name: upload root info
+        uses: actions/upload-artifact@v3
+        with:
+          name: run-metadata
+          path: run-metadata.json
+          retention-days: 1

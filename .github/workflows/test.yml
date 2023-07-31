@@ -31,15 +31,9 @@ jobs:
       - run: |
           echo running tests
   run-metadata:
-    runs-on: ubuntu-latest
-    steps:
-      - env:
-          GITHUB: ${{ toJSON(github) }}
-        run: |
-          echo "${GITHUB}" | jq 'del(.token)' > github-workflow-root.json
-      - name: upload root info
-        uses: actions/upload-artifact@v3
-        with:
-          name: gh-root-meta
-          path: github-workflow-root.json
-          retention-days: 1
+    uses: ./.github/workflows/run-metadata-upload.yml
+    with:
+      extras: |
+        { 
+          "foo": "bar" 
+        }
