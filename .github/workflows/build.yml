@@ -43,7 +43,7 @@ jobs:
         id: filter
         with:
           base: ${{ fromJSON(needs.gh-root-meta.outputs.root_meta).event.before }}
-          ref: ${{ fromJSON(needs.gh-root-meta.outputs.root_meta).event.head_ref }}
+          ref: ${{ fromJSON(needs.gh-root-meta.outputs.root_meta).event.ref }}
           filters: |
             app:
               - 'README.md'
