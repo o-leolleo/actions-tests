@@ -10,10 +10,10 @@ on:
     outputs:
       metadata: 
         description: Workflow run metadata
-        value: ${{ jobs.run-metadata-download.outputs.run-metadata.metadata }}
+        value: ${{ jobs.run-metadata-download.outputs.metadata }}
       extras:
         description: Workflow run extras
-        value: ${{ jobs.run-metadata-download.outputs.run-metadata.extras }}
+        value: ${{ jobs.run-metadata-download.outputs.extras }}
       base:
         description: Used as param to path-filter.
         value: ${{ jobs.run-metadata-download.outputs.base }}
@@ -24,7 +24,8 @@ jobs:
   run-metadata-download:
     runs-on: ubuntu-latest
     outputs:
-      run-metadata: ${{ steps.run_metadata.outputs.run_metadata }}
+      metadata: ${{ steps.run_metadata.outputs.metadata }}
+      extras: ${{ steps.run_metadata.outputs.extras }}
       base: ${{ steps.refs.outputs.base }}
       ref: ${{ steps.refs.outputs.ref }}
     steps:
@@ -46,11 +47,11 @@ jobs:
       - name: Sets path filters helpers
         id: refs
         env:
-          METADATA_EVENT_NAME: ${{ fromJson(steps.run_metadata.outputs.run_metadata.metadata).event_name }}
-          METADATA_REF: ${{ fromJson(steps.run_metadata.outputs.run_metadata.metadata).ref }}
-          METADATA_BASE_REF: ${{ fromJson(steps.run_metadata.outputs.run_metadata.metadata).base_ref }}
-          METADATA_HEAD_REF: ${{ fromJson(steps.run_metadata.outputs.run_metadata.metadata).head_ref }}
-          BEFORE: ${{ fromJson(steps.run_metadata.outputs.run_metadata.metadata).event.before }}
+          METADATA_EVENT_NAME: ${{ fromJson(steps.run_metadata.outputs.metadata).event_name }}
+          METADATA_REF: ${{ fromJson(steps.run_metadata.outputs.metadata).ref }}
+          METADATA_BASE_REF: ${{ fromJson(steps.run_metadata.outputs.metadata).base_ref }}
+          METADATA_HEAD_REF: ${{ fromJson(steps.run_metadata.outputs.metadata).head_ref }}
+          BEFORE: ${{ fromJson(steps.run_metadata.outputs.metadata).event.before }}
         run: |
           if [[ "${METADATA_EVENT_NAME}" == 'push' ]]; then
             base="${BEFORE}"
